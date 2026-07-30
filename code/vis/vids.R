@@ -133,11 +133,20 @@ make_frames_horiz <- function(dir){
       labs(title = paste0("Pfmdr1-N86Y", " prevalence - ", yr)) +
       theme_bw()
     
-    plot_grid(k13, crt76, mdr86, nrow = 1)
+    if (dir == "horiz"){
+      plot_grid(k13, crt76, mdr86, nrow = 1)
+      
+      ggsave(paste0("vids/", dir, "/", yr, ".png"),
+             height = 6,
+             width = 13)
+    } else {
+      plot_grid(crt76, mdr86, nrow = 1)
+      
+      ggsave(paste0("vids/", dir, "/", yr, ".png"),
+             height = 6,
+             width = 9)
+    }
     
-    ggsave(paste0("vids/", dir, "/", yr, ".png"),
-           height = 6,
-           width = 13)
   }
 }
 
@@ -168,8 +177,10 @@ compile_gif <- function(marker, years = NULL, fps = 1){
 make_frames("k13_marcse")
 make_frames("crt76")
 make_frames_horiz("horiz")
+make_frames_horiz("76_86")
 
-compile_gif("k13_marcse", years = c(2010, 2028), fps = 4)
+compile_gif("k13_marcse", years = c(2010, 2028), fps = 2)
 compile_gif("horiz", fps = 4)
+compile_gif("76_86", fps = 4)
 
 

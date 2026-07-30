@@ -91,6 +91,7 @@ pred_time_plot <- function(path,
                            incid = NULL,
                            ylim = c(0, 1),
                            ylab = "Prevalence",
+                           mask_shp = NULL,
                            cut_year = NULL){
   
   preds <- rast(paste0(path, "preds_medians.tif")) %>%
@@ -98,6 +99,10 @@ pred_time_plot <- function(path,
     # but choosing median would remove all of my peaks and not aggregating would
     # make this take 100 times longer to run :/
     aggregate(fact = agg_fact, fun = "mean", na.rm = TRUE)
+  
+  if (!is.null(mask)){
+    preds <- mask(preds, mask_shp)
+  }
   
   if (!is.null(incid)){
     incid <- aggregate(incid, agg_fact, fun = "sum", na.rm = TRUE)
@@ -182,6 +187,15 @@ pred_time_plot <- function(path,
     message("Watch out! I set size limits manually!")
     mut_data <- read_rds(paste0(path, "mut_data.rds"))
     message(max(mut_data$tested))
+    
+    if (!is.null(mask_shp)){
+      # subset to points inside mask
+      mut_data <- mut_data %>%
+        filter(st_as_sf(mut_data, coords = c("x", "y"), crs = st_crs(mask_shp)) %>%
+                 st_intersects(st_union(mask_shp), sparse = FALSE) %>%
+                 as.vector())
+      
+    }
     
     if (show_pt_cols == TRUE){
       mut_data <- extract_regions(mut_data)

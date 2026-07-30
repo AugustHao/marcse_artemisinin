@@ -12,8 +12,6 @@ library(grid)
 library(cowplot)
 library(patchwork)
 
-
-
 # mask
 afr <- world %>%
   filter(continent == "Africa") %>%

@@ -1,7 +1,5 @@
 # parallelise model fitting for cross-validation
 
-# with thanks to jerrick:
-# https://dept.stat.lsa.umich.edu/~jerrick/courses/stat506_f24/16-parallel-processing.html
 start <- Sys.time()
 
 library(parallel)
@@ -46,7 +44,6 @@ NFOLD <- 5
 folds <- createFolds(mut_data$present / mut_data$tested, k = NFOLD)
 write_rds(folds, paste0("output/", out_dir, "cv_folds.rds"))
 
-# print("para?")
 system.time(mclapply(1:NFOLD, function(x){
   fit_binom(mut_data = mut_data,
             covariates = covariates,
@@ -58,17 +55,4 @@ system.time(mclapply(1:NFOLD, function(x){
             warmup = 3000,
             nsamples = 20000)
 }, mc.cores = 5))
-
-# print("serial?")
-# system.time(lapply(1:NFOLD, function(x){
-#   fit_binom(mut_data = mut_data,
-#             covariates = covariates,
-#             pfpr_years = pfpr_years,
-#             out_dir = out_dir,
-#             fold = x,
-#             folds = folds) %>%
-#     suppressMessages()
-# }))
-
-# test <- folds[[fold]] # don't need you yet !
 

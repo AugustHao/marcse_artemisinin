@@ -5,7 +5,11 @@ snps <- dirs[grepl("k13snp", dirs) & str_count(dirs, "/") == 1]
 snps <- str_extract(snps, "(?<=_).*")
 
 mutants <- read.csv("data/clean/moldm_marcse_with_markers.csv")
+
+# LH jumping in here 28/07/2026 - have commented my edits out again
 wts <- read.csv("data/clean/moldm_marcse_wildtypes_to_add.csv")
+  # mutants %>%
+  # filter(Marker == "wildtype")
 
 extract_snp_dataset <- function(snp){
   # filter out matching records of the SNP, join with full WT set, write to data/clean/
@@ -14,8 +18,11 @@ extract_snp_dataset <- function(snp){
   
   wts <- anti_join(wts, 
                    muts %>% dplyr::select(Longitude, Latitude, year, 
+                                          # PubMedID,
                                           Site.Name, Country)) %>%
-    group_by(Longitude, Latitude, year, Site.Name, Country) %>%
+    group_by(Longitude, Latitude, year, Site.Name,
+             # PubMedID, 
+             Country) %>%
     summarise(Tested = max(Tested)) %>%
     mutate(Present = 0)
   

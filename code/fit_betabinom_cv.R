@@ -1,7 +1,5 @@
 # parallelise model fitting for cross-validation
 
-# with thanks to jerrick:
-# https://dept.stat.lsa.umich.edu/~jerrick/courses/stat506_f24/16-parallel-processing.html
 start <- Sys.time()
 
 library(parallel)
@@ -58,5 +56,4 @@ system.time(mclapply(1:NFOLD, function(x){
             nsamples = 30000)
 }, mc.cores = NFOLD))
 
-# test <- folds[[fold]] # don't need you yet !
 

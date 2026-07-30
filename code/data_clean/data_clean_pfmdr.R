@@ -513,7 +513,17 @@ cat(reports, file = to_report, append = TRUE, sep = "\n")
 #     minor_breaks = seq(0, 1, length.out = 11))
 
 
-
+ggplot(partners %>% 
+         filter(loc == "Pfmdr1 D1246Y" & year > 2017) %>% 
+         arrange(Present/Tested)) +
+  geom_sf(data = afr) +
+  geom_point(aes(x = Longitude, y = Latitude, size= Tested, col = Present/Tested)) +
+  scale_color_gradientn(colors = iddoPal::iddo_palettes$BlGyRd, 
+                       "",
+                       breaks = c(0, 0.5, 1), 
+                       labels = c("0  (all wildtype)", "0.5", "1  (all mutant)"),
+                       limits = c(0,1)) +
+  facet_wrap(~year)
 
 
 
