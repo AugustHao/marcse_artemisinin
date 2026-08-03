@@ -22,6 +22,7 @@ world <- ne_countries(scale="medium", returnclass = "sf")
 MIN_YEAR <- 2000
 BUFFER <- 5000
 
+theme_set(theme_bw())
 
 # here is some run up:
 nice_name_lookup_main <- list("k13_marcse" = "Kelch 13",
@@ -51,6 +52,10 @@ data_path_lookup <- list("k13_marcse" = "data/clean/moldm_marcse_k13_nomarker.cs
                          "k13snp_P441L" = "data/clean/moldm_marcse_k13snp_P441L.csv",
                          "k13snp_R561H" = "data/clean/moldm_marcse_k13snp_R561H.csv",
                          "k13snp_R622I" = "data/clean/moldm_marcse_k13snp_R622I.csv")
+
+bb_paths <- lapply(names(nice_name_lookup_all),
+                   function(marker){paste0("output/", marker, "/bb_gne/")})
+names(bb_paths) <- names(nice_name_lookup_all)
 
 
 # country shps for plotting/masking
