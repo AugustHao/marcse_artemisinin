@@ -19,24 +19,28 @@ cd ../
 pwd
 
 DATASETS=(
-  # mdr86
-  # mdr184
-  # mdr1246
-  # crt76
-  # k13_marcse
-  # k13snp_R561H
-  # k13snp_R622I
-  # k13snp_C469Y
-  # k13snp_P441L
+  mdr86
+  mdr184
+  mdr1246
+  crt76
+  k13_marcse
+  k13snp_R561H
+  k13snp_R622I
+  k13snp_C469Y
+  k13snp_P441L
   k13snp_A675V
 )
 
 SEEDS=(
-  # 244
-  # 250
-  # 332
-  # 124
-  # 124
+  244
+  250
+  332
+  124
+  124
+  124
+  124
+  124
+  124
   124
 )
 
@@ -46,6 +50,6 @@ DATASET=${DATASETS[$SLURM_ARRAY_TASK_ID]}
 SEED=${SEEDS[$SLURM_ARRAY_TASK_ID]}
 
 # Run R script
-Rscript code/fit_betabinom_cv.R "$DATASET" "$SEED"
+Rscript code/fit_betabinom_cv_spat.R "$DATASET" "$SEED"
 
 echo "Job done!"

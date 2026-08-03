@@ -19,9 +19,6 @@ seed <- as.numeric(args[2])
 print(paste0("Marker: ", marker))
 print(paste0("Seed: ", seed))
 
-# snp = "k13_marcse"
-# seed = 123
-
 set.seed(seed)
 
 out_dir <- paste0(marker, "/bb_gne/")
@@ -43,7 +40,7 @@ NFOLD <- 10
 folds <- createFolds(mut_data$present / mut_data$tested, k = NFOLD)
 write_rds(folds, paste0("output/", out_dir, "cv_folds.rds"))
 
-# print("para?")
+
 system.time(mclapply(1:NFOLD, function(x){
   fit_betabinom(mut_data = mut_data,
             covariates = covariates,
