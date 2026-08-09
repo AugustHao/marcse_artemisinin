@@ -2,9 +2,9 @@
 #SBATCH --job-name=inf_cv
 #SBATCH --output=logs/%x_%A_%a.out
 #SBATCH --error=logs/%x_%A_%a.err
-#SBATCH --time=8:00:00           # Max runtime (HH:MM:SS)
+#SBATCH --time=4:00:00           # Max runtime (HH:MM:SS)
 #SBATCH --mem=50000                  # Memory per node
-#SBATCH --array=0-1
+#SBATCH --array=0
 #SBATCH --cpus-per-task=30         # Number of CPU cores per task
 
 #SBATCH --mail-type=BEGIN,END,FAIL  # Send email when job begins, ends, or fails
@@ -19,29 +19,29 @@ cd ../
 pwd
 
 DATASETS=(
-  mdr86
-  mdr184
+  # mdr86
+  # mdr184
   mdr1246
-  crt76
-  k13_marcse
-  k13snp_R561H
-  k13snp_R622I
-  k13snp_C469Y
-  k13snp_P441L
-  k13snp_A675V
+  # crt76
+  # k13_marcse
+  # k13snp_R561H
+  # k13snp_R622I
+  # k13snp_C469Y
+  # k13snp_P441L
+  # k13snp_A675V
 )
 
 SEEDS=(
-  244
-  250
-  332
-  124
-  124
-  124
-  124
-  124
-  124
-  124
+  # 124
+  # 124
+  126
+  # 124
+  # 124
+  # 124
+  # 124
+  # 124
+  # 124
+  # 124
 )
 
 # Select dataset for this array task

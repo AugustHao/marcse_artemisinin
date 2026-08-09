@@ -36,17 +36,29 @@ fit_binom <- function(mut_data,
                      covariates,
                      pfpr_years,
                      out_dir,
-                     fold = NULL,
+                     fold = NULL, # numeric !
                      folds = NULL,
+                     lfo = FALSE, # flag for leave-future-out CV
                      warmup = 100, 
                      nsamples = 100, 
                      nchains = 6,
                      buffer = 0){
   
   if(!is.null(fold)){
-    train <- unlist(folds[-c(fold)])
+    # remove testing data from training set
+    if(!lfo){
+      train <- unlist(folds[-c(fold)])
+      # response-stratified CV/spatially-stratified CV: 
+      # remove test set from full set
+    } else {
+      train <- unlist(folds[fold])  
+      # LFO: fold is everything up to current year
+      # (setdiff on next fold for test set)
+    }
+    
     mut_data = mut_data[train,]
     fold = paste0("_", fold)  # faff
+    
   } else {
     fold = ""
   }

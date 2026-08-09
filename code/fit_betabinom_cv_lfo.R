@@ -1,4 +1,4 @@
-# WRAP MODEL FITTING WITH SPATIALLY STRATIFIED CROSS VALIDATION
+# WRAP MODEL FITTING WITH LEAVE FUTURE OUT CV
 
 library(parallel)
 library(caret)
@@ -36,38 +36,26 @@ write_rds(mut_data, paste0("output/", out_dir, "mut_data.rds"))
 
 NFOLD <- 10
 
-# pop mut_data into sf format
-mut_data_sf <- st_as_sf(mut_data, coords = c("x", "y"), crs = st_crs(afr))
 
-# from blockCV docs - seed set above
-folds <- cv_spatial(
-  x = mut_data_sf,
-  k = NFOLD, # number of folds
-  size = 500000, # size of the blocks in metres
-  selection = "random", # random blocks-to-fold
-  iteration = 50, # find evenly dispersed folds
-  progress = FALSE
-)
+
+# separate out folds by time
+folds <- lapply(1:NFOLD, function(x){
+  cutoff <- max(mut_data$year) - NFOLD + x
+  which(mut_data$year <= cutoff)
+})
 
 # for supp?:
 # mut_data_sf$folds <- folds$folds_ids
 
-# p <- ggplot() +
-#   geom_sf(data = afr, fill = NA) +
-#   geom_sf(data = folds$blocks) +
-#   geom_sf(data = mut_data_sf, pch = 1) +
-#   facet_wrap(~folds)
-
-# ggsave(p, paste("figures/spat_folds_", marker, ".png"))
-
-# write in same format as caret::createFolds
-folds <- lapply(folds$folds_list, function(x){
-  x[[2]]
-})
+p <- ggplot() +
+  geom_sf(data = afr, fill = NA) +
+  geom_sf(data = folds$blocks) +
+  geom_sf(data = mut_data_sf, pch = 1) +
+  facet_wrap(~folds)
 
 names(folds) <- paste0("Fold", 1:NFOLD)
 
-write_rds(folds, paste0("output/", out_dir, "cv_folds_spat.rds"))
+write_rds(folds, paste0("output/", out_dir, "cv_folds_lfo.rds"))
 
 system.time(mclapply(1:NFOLD, function(x){
   fit_betabinom(mut_data = mut_data,
@@ -76,6 +64,7 @@ system.time(mclapply(1:NFOLD, function(x){
                 out_dir = out_dir,
                 fold = x,
                 folds = folds,
+                lfo = TRUE,
                 nchains = 6,
                 warmup = 5000,
                 nsamples = 30000)
