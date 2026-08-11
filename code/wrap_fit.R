@@ -44,24 +44,7 @@ fit_binom <- function(mut_data,
                      nchains = 6,
                      buffer = 0){
   
-  if(!is.null(fold)){
-    # remove testing data from training set
-    if(!lfo){
-      train <- unlist(folds[-c(fold)])
-      # response-stratified CV/spatially-stratified CV: 
-      # remove test set from full set
-    } else {
-      train <- unlist(folds[fold])  
-      # LFO: fold is everything up to current year
-      # (setdiff on next fold for test set)
-    }
-    
-    mut_data = mut_data[train,]
-    fold = paste0("_", fold)  # faff
-    
-  } else {
-    fold = ""
-  }
+  
   
   message(nrow(mut_data))
   
@@ -72,6 +55,16 @@ fit_binom <- function(mut_data,
                              temporal_covt_range = pfpr_years,
                              degs_to_rads = TRUE,
                              buffer = buffer)
+  if(!is.null(fold)){
+    train <- unlist(folds[-c(fold)])
+    mut_data = mut_data[train,]
+    fold = paste0("_", fold)  # faff
+  } else {
+    fold = ""
+  }
+
+  message("here")
+  
   X_obs <- out$df %>% 
     # not previously here but feels sensible:
     filter(!is.na(pfpr))
@@ -194,15 +187,29 @@ fit_betabinom <- function(mut_data,
                       nsamples = 100, 
                       nchains = 6,
                       buffer = 0){
+                        
+  message("here!")
   
   if(!is.null(fold)){
-    train <- unlist(folds[-c(fold)])
+    # remove testing data from training set
+    if(!lfo){
+      train <- unlist(folds[-c(fold)])
+      # response-stratified CV/spatially-stratified CV: 
+      # remove test set from full set
+    } else {
+      message("lfo!")
+      train <- unlist(folds[fold])  
+      # LFO: fold is everything up to current year
+      # (setdiff on next fold for test set)
+    }
+    
     mut_data = mut_data[train,]
     fold = paste0("_", fold)  # faff
+    
   } else {
     fold = ""
   }
-  
+
   message(nrow(mut_data))
   
   out <- build_design_matrix(covariates,

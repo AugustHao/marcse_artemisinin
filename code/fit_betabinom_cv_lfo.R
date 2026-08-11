@@ -20,7 +20,7 @@ print(paste0("Seed: ", seed))
 
 set.seed(seed)
 
-out_dir <- paste0(marker, "/bb_gne/")
+out_dir <- paste0(marker, "/bb_gne/lfo/")
 
 in_dat <- data_path_lookup[[marker]]
 
@@ -44,20 +44,24 @@ folds <- lapply(1:NFOLD, function(x){
   which(mut_data$year <= cutoff)
 })
 
-# for supp?:
-# mut_data_sf$folds <- folds$folds_ids
-
-p <- ggplot() +
-  geom_sf(data = afr, fill = NA) +
-  geom_sf(data = folds$blocks) +
-  geom_sf(data = mut_data_sf, pch = 1) +
-  facet_wrap(~folds)
-
 names(folds) <- paste0("Fold", 1:NFOLD)
 
 write_rds(folds, paste0("output/", out_dir, "cv_folds_lfo.rds"))
 
-system.time(mclapply(1:NFOLD, function(x){
+# system.time(mclapply(1:NFOLD, function(x){
+#   fit_betabinom(mut_data = mut_data,
+#                 covariates = covariates,
+#                 pfpr_years = pfpr_years,
+#                 out_dir = out_dir,
+#                 fold = x,
+#                 folds = folds,
+#                 lfo = TRUE,
+#                 nchains = 6,
+#                 warmup = 5000,
+#                 nsamples = 30000)
+# }, mc.cores = NFOLD))
+
+system.time(lapply(1:NFOLD, function(x){
   fit_betabinom(mut_data = mut_data,
                 covariates = covariates,
                 pfpr_years = pfpr_years,
@@ -68,4 +72,5 @@ system.time(mclapply(1:NFOLD, function(x){
                 nchains = 6,
                 warmup = 5000,
                 nsamples = 30000)
-}, mc.cores = NFOLD))
+}))
+

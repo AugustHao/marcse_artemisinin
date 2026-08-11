@@ -4,7 +4,7 @@
 #SBATCH --error=logs/%x_%A_%a.err
 #SBATCH --time=3:00:00           # Max runtime (HH:MM:SS)
 #SBATCH --mem=60G                  # Memory per node
-#SBATCH --array=0-9                 # should be up to nmarkers*nfolds
+#SBATCH --array=0-49                 # should be up to nmarkers*nfolds
 #SBATCH --cpus-per-task=20         # Number of CPU cores per task
 
 #SBATCH --mail-type=BEGIN,END,FAIL  # Send email when job begins, ends, or fails
